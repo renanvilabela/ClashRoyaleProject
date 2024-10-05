@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import WinPercentage from './WinPercent';
 import DeckList from './DeckList';
 import LossCount from './LossCount';
-import HomePage from './HomePage'; // Certifique-se de que o arquivo HomePage.js exista
+import HomePage from './HomePage'; 
+import './App.css';
 
 const App = () => {
   return (
