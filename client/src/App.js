@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import WinPercentage from './WinPercent';
+import DeckList from './DeckList';
+import LossCount from './LossCount';
+import HomePage from './HomePage'; // Certifique-se de que o arquivo HomePage.js exista
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <nav>
+        <Link to="/">Home</Link> | 
+        <Link to="/win-percentage">Porcentagem de Vitórias</Link> | 
+        <Link to="/deck-list">Lista de Decks</Link> | 
+        <Link to="/loss-count">Quantidade de Derrotas</Link>
+      </nav>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/win-percentage" element={<WinPercentage />} />
+        <Route path="/deck-list" element={<DeckList />} />
+        <Route path="/loss-count" element={<LossCount />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
