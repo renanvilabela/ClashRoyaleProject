@@ -6,8 +6,10 @@ const DeckList = () => {
   const [decks, setDecks] = useState([]);
 
   useEffect(() => {
-    // Chama a função para buscar os decks
-    fetchDecks().then((data) => setDecks(data));
+    fetch('http://localhost:5000/decks')
+      .then((response) => response.json())
+      .then((data) => setDecks(data))
+      .catch((error) => console.error('Erro ao buscar decks:', error));
   }, []);
 
   return (

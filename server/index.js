@@ -1,41 +1,35 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+require('dotenv').config();
+
+console.log(process.env.MONGO_URI);
 
 const app = express();
-const PORT = 5000;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Conectar ao MongoDB (altere a string de conexão para o seu banco)
-mongoose.connect('mongodb://localhost:27017/clashroyale', {
+// Conectar ao MongoDB Atlas
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}).then(() => console.log('Conectado ao MongoDB'))
-  .catch((error) => console.error('Erro ao conectar ao MongoDB:', error));
+})
+.then(() => console.log('MongoDB conectado com sucesso!'))
+.catch((err) => console.error('Erro ao conectar ao MongoDB:', err));
 
-// Definição de um modelo (schema) para decks
-const deckSchema = new mongoose.Schema({
-  name: String,
-  victories: Number,
-  losses: Number
-});
-
-const Deck = mongoose.model('Deck', deckSchema);
-
-// Rota para buscar decks
-app.get('/api/decks', async (req, res) => {
-  try {
-    const decks = await Deck.find();
-    res.json(decks);
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar decks' });
-  }
+// Rotas
+app.get('/', (req, res) => {
+  res.send('API está funcionando!');
 });
 
 // Iniciar o servidor
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`Servidor rodando na porta ${port}`);
 });
+
+const deckRoutes = require('./Routes/decks');
+
+app.use('/decks', deckRoutes);
