@@ -1,49 +1,50 @@
 const express = require('express');
+const Battle = require('../models/battle'); // Verifique se o caminho está correto
+
 const router = express.Router();
-const Battle = require('../models/battle');  
 
-// Rota para obter porcentagem de vitórias por carta
+// Rota para contar vitórias de um jogador com uma carta específica
 router.get('/card-winrate/:cardName', async (req, res) => {
+  const { cardName } = req.params;
+
   try {
-    const cardName = req.params.cardName;
+    // Contar vitórias do player 1 com a carta especificada
+    const player1Wins = await Battle.countDocuments({
+      $or: [
+        { p1_1: cardName, 'player_1.victory': true },
+        { p1_2: cardName, 'player_1.victory': true },
+        { p1_3: cardName, 'player_1.victory': true },
+        { p1_4: cardName, 'player_1.victory': true },
+        { p1_5: cardName, 'player_1.victory': true },
+        { p1_6: cardName, 'player_1.victory': true },
+        { p1_7: cardName, 'player_1.victory': true },
+        { p1_8: cardName, 'player_1.victory': true }
+      ]
+    });
 
-    // Agregação para calcular as estatísticas de vitórias e derrotas para a carta
-    const result = await Battle.aggregate([
-      {
-        $match: {
-          $or: [
-            { p1_1: cardName }, { p1_2: cardName }, { p1_3: cardName }, { p1_4: cardName }, { p1_5: cardName }, { p1_6: cardName }, { p1_7: cardName }, { p1_8: cardName },
-            { p2_1: cardName }, { p2_2: cardName }, { p2_3: cardName }, { p2_4: cardName }, { p2_5: cardName }, { p2_6: cardName }, { p2_7: cardName }, { p2_8: cardName }
-          ]
-        }
-      },
-      {
-        $group: {
-          _id: null,
-          totalBattles: { $sum: 1 },
-          wins: { $sum: { $cond: [{ $gt: ['$p1_crowns', '$p2_crowns'] }, 1, 0] } },
-          losses: { $sum: { $cond: [{ $lt: ['$p1_crowns', '$p2_crowns'] }, 1, 0] } }
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          totalBattles: 1,
-          wins: 1,
-          losses: 1,
-          winPercentage: { $multiply: [{ $divide: ['$wins', '$totalBattles'] }, 100] },
-          lossPercentage: { $multiply: [{ $divide: ['$losses', '$totalBattles'] }, 100] }
-        }
-      }
-    ]);
+    // Contar vitórias do player 2 com a carta especificada
+    const player2Wins = await Battle.countDocuments({
+      $or: [
+        { p2_1: cardName, 'player_2.victory': true },
+        { p2_2: cardName, 'player_2.victory': true },
+        { p2_3: cardName, 'player_2.victory': true },
+        { p2_4: cardName, 'player_2.victory': true },
+        { p2_5: cardName, 'player_2.victory': true },
+        { p2_6: cardName, 'player_2.victory': true },
+        { p2_7: cardName, 'player_2.victory': true },
+        { p2_8: cardName, 'player_2.victory': true }
+      ]
+    });
 
-    if (result.length === 0) {
-      return res.status(404).json({ message: 'Carta não encontrada ou sem resultados.' });
-    }
-
-    res.json({ card: cardName, ...result[0] });
+    // Retornar a contagem total de vitórias
+    res.json({
+      player1Wins,
+      player2Wins,
+      totalWins: player1Wins + player2Wins
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao processar a requisição.', error });
+    console.error('Erro ao contar vitórias:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 });
 
