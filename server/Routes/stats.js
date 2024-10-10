@@ -1,5 +1,5 @@
 const express = require('express');
-const Battle = require('../models/battle'); // Verifique se o caminho está correto
+const Battle = require('../models/battle'); 
 
 const router = express.Router();
 
