@@ -3,8 +3,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
-console.log(process.env.MONGO_URI);
-
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -20,16 +18,16 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log('MongoDB conectado com sucesso!'))
 .catch((err) => console.error('Erro ao conectar ao MongoDB:', err));
 
-// Rotas
+// Rota padrão para verificar se a API está funcionando
 app.get('/', (req, res) => {
   res.send('API está funcionando!');
 });
+
+// Importar e usar a rota de estatísticas
+const statsRoutes = require('./Routes/stats');
+app.use('/battles', statsRoutes);  // Prefixo da rota /battles
 
 // Iniciar o servidor
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
 });
-
-const deckRoutes = require('./Routes/decks');
-
-app.use('/decks', deckRoutes);
