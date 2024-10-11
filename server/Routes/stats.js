@@ -8,6 +8,8 @@ router.get('/card-winrate/:cardName', async (req, res) => {
   const { cardName } = req.params;
 
   try {
+    console.log("Consultando vitórias com a carta:", cardName);
+
     // Contar vitórias do player 1 com a carta especificada
     const player1Wins = await Battle.countDocuments({
       $or: [
@@ -21,6 +23,7 @@ router.get('/card-winrate/:cardName', async (req, res) => {
         { p1_8: cardName, 'player_1.victory': true }
       ]
     });
+    console.log("Vitórias do Player 1:", player1Wins);
 
     // Contar vitórias do player 2 com a carta especificada
     const player2Wins = await Battle.countDocuments({
@@ -35,6 +38,7 @@ router.get('/card-winrate/:cardName', async (req, res) => {
         { p2_8: cardName, 'player_2.victory': true }
       ]
     });
+    console.log("Vitórias do Player 2:", player2Wins);
 
     // Retornar a contagem total de vitórias
     res.json({

@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 
 // Importar e usar a rota de estatísticas
 const statsRoutes = require('./Routes/stats');
-app.use('/battles', statsRoutes);  // Prefixo da rota /battles
+app.use('/battles', statsRoutes);
 
 // Iniciar o servidor
 app.listen(port, () => {
